@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Home - TicketSecure{% endblock %}
+{% block content %}
+<h1>Upcoming Events</h1>
+
+{% if not events %}
+  <p>No events found. Please ask admin to seed or create new events.</p>
+{% else %}
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for event in events %}
+    <div class="col">
+      <div class="card h-100">
+        <img src="{{ event.banner }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+          <h5 class="card-title">{{ event.name }}</h5>
+          <p class="card-text text-muted">
+            {{ event.date }} at {{ event.time }}<br>
+            £{{ event.price|default('0') }}
+          </p>
+          <p class="card-text">{{ event.description }}</p>
+          <a href="{{ url_for('booking_bp.view_event', concert_id=event.id) }}" class="btn btn-primary">
+            Book Now
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

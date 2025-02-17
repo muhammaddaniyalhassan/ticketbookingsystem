@@ -1,0 +1,82 @@
+<!-- templates/admin.html -->
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - TicketSecure{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1 class="mb-4">Admin Dashboard</h1>
+
+    <!-- Seed Dummy Events -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Seed Dummy Events</h5>
+            <a href="{{ url_for('admin_bp.seed_dummy_events') }}" class="btn btn-primary">Seed Events</a>
+        </div>
+    </div>
+
+    <!-- Add Event Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Add New Event</h5>
+            <form method="POST" action="{{ url_for('admin_bp.add_event') }}" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                
+                <div class="mb-3">
+                    <label>Event Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Event Date</label>
+                        <input type="date" name="date" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Event Time</label>
+                        <input type="time" name="time" class="form-control" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Description</label>
+                    <textarea name="description" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label>Price (£)</label>
+                    <input type="number" name="price" class="form-control" step="0.01" required>
+                </div>
+                <div class="mb-3">
+                    <label>Event Banner (jpg or png)</label>
+                    <input type="file" name="banner" class="form-control" accept="image/*">
+                </div>
+                
+                <button type="submit" class="btn btn-success w-100">Add Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Admin User Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Create Admin User</h5>
+            <form method="POST" action="{{ url_for('admin_bp.create_admin') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Password (≥12 chars)</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                
+                <button type="submit" class="btn btn-warning w-100">Create Admin</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

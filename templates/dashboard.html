@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Dashboard</h2>
+<p>Your Bookings:</p>
+<ul>
+  {% for b in bookings %}
+    <li>
+      Concert ID: {{ b.concert_id }},
+      Seat: {{ b.seat_id }},
+      Booked at: {{ b.booking_time }},
+      Attendee: {{ b.attendee_name }}
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

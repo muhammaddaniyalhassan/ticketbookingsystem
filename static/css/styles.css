@@ -1,0 +1,82 @@
+:root {
+  --primary: #0d6efd;
+  --secondary: #6c757d;
+  --success: #198754;
+  --danger: #dc3545;
+  --dark: #212529;
+  --light: #f8f9fa;
+}
+
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-1px);
+}
+
+.seat-map {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.seat {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.seat.available {
+  background-color: var(--success);
+  color: white;
+}
+
+.seat.booked {
+  background-color: var(--danger);
+  color: white;
+  cursor: not-allowed;
+}
+
+.seat.locked {
+  background-color: var(--secondary);
+  color: white;
+  cursor: not-allowed;
+}
+
+#payment-form {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+}
+
+.sticky-sidebar {
+  position: sticky;
+  top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .seat-map {
+      grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Confirm and Pay</h2>
+<form method="POST" action="{{ url_for('checkout') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="hidden" name="concert_id" value="{{ request.args.get('concert_id') }}">
+  <input type="hidden" name="seat_id" value="{{ request.args.get('seat_id') }}">
+  
+  <div class="form-group">
+    <label>Attendee Name</label>
+    <input type="text" name="attendee_name" class="form-control" required>
+  </div>
+  <div class="form-group">
+    <label>Attendee Email</label>
+    <input type="email" name="attendee_email" class="form-control" required>
+  </div>
+  <!-- Payment Fields or rely on test token for now -->
+  <button type="submit" class="btn btn-primary">Pay & Book</button>
+</form>
+{% endblock %}

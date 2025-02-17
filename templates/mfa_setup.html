@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}2FA Setup - TicketSecure{% endblock %}
+{% block content %}
+<h2 class="mb-4">Set up Google Authenticator</h2>
+{% if uri %}
+  <p>Scan this QR code in Google Authenticator:</p>
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ uri|urlencode }}" alt="QR Code" class="mb-3">
+  <p>OR manually enter the secret:</p>
+{% endif %}
+{% if totp_secret %}
+<div class="alert alert-info">
+  <strong>Manual Setup Key:</strong> {{ totp_secret }}
+</div>
+{% endif %}
+
+<form method="POST" action="{{ url_for('auth_bp.verify_2fa') }}" class="w-50">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <div class="mb-3">
+    <label for="mfa_code" class="form-label">2FA Code (6 digits)</label>
+    <input type="text" class="form-control" id="mfa_code" name="mfa_code" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Verify 2FA</button>
+</form>
+{% endblock %}

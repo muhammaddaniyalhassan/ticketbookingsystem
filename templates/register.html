@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Register - TicketSecure{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0 text-center">Create Your Account</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('auth_bp.register') }}" class="needs-validation" novalidate>
+                        <!-- Add CSRF Token -->
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="username" 
+                                   name="username" 
+                                   value="{{ prev_username or '' }}" 
+                                   required
+                                   pattern="[a-zA-Z0-9_]{3,20}"
+                                   title="3-20 characters (letters, numbers, underscores)">
+                            <div class="invalid-feedback">
+                                Please choose a valid username (3-20 characters)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" 
+                                   class="form-control form-control-lg" 
+                                   id="email" 
+                                   name="email" 
+                                   value="{{ prev_email or '' }}" 
+                                   required>
+                            <div class="invalid-feedback">
+                                Please provide a valid email address
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" 
+                                   class="form-control form-control-lg" 
+                                   id="password" 
+                                   name="password" 
+                                   required
+                                   minlength="12"
+                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{12,}$"
+                                   title="Must contain: uppercase, lowercase, number, special character">
+                            <div class="invalid-feedback">
+                                Password must be at least 12 characters with uppercase, lowercase, number, and special character
+                            </div>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle"></i> Requirements:
+                                    <ul class="list-unstyled">
+                                        <li><span class="password-requirement" data-requirement="length">✓</span> 12+ characters</li>
+                                        <li><span class="password-requirement" data-requirement="upper">✓</span> Uppercase letter</li>
+                                        <li><span class="password-requirement" data-requirement="lower">✓</span> Lowercase letter</li>
+                                        <li><span class="password-requirement" data-requirement="number">✓</span> Number</li>
+                                        <li><span class="password-requirement" data-requirement="special">✓</span> Special character</li>
+                                    </ul>
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-person-plus"></i> Create Account
+                            </button>
+                            <p class="text-center mt-3">
+                                Already have an account? 
+                                <a href="{{ url_for('auth_bp.login') }}" class="text-decoration-none">
+                                    Login here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password validation feedback
+    const passwordField = document.getElementById('password');
+    const requirements = {
+        length: v => v.length >= 12,
+        upper: v => /[A-Z]/.test(v),
+        lower: v => /[a-z]/.test(v),
+        number: v => /\d/.test(v),
+        special: v => /[!@#$%^&*]/.test(v)
+    };
+
+    passwordField.addEventListener('input', function(e) {
+        const value = e.target.value;
+        Object.keys(requirements).forEach(key => {
+            const element = document.querySelector(`[data-requirement="${key}"]`);
+            element.textContent = requirements[key](value) ? '✓' : '✗';
+            element.style.color = requirements[key](value) ? 'green' : 'red';
+        });
+    });
+
+    // Form validation
+    const forms = document.querySelector('.needs-validation');
+    forms.addEventListener('submit', function(event) {
+        if (!forms.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        forms.classList.add('was-validated');
+    }, false);
+});
+</script>
+
+<style>
+.password-requirement {
+    display: inline-block;
+    width: 1.2em;
+    text-align: center;
+    font-weight: bold;
+}
+.card {
+    margin-top: 2rem;
+    border-radius: 1rem;
+}
+.form-control-lg {
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+</style>
+{% endblock %}

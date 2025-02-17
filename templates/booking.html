@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Book Tickets - {{ concert.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">{{ concert.name }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-3 mb-4">
+                        <div>
+                            <i class="bi bi-calendar-event fs-5"></i>
+                            <span class="ms-2">{{ concert.date }} {{ concert.time }}</span>
+                        </div>
+                        <div>
+                            <i class="bi bi-geo-alt fs-5"></i>
+                            <span class="ms-2">Virtual Event</span>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mb-3">Select Your Seat</h4>
+                    <div class="seat-map">
+                        {% for seat_id, status in concert.seats.items() %}
+                        <button class="seat {{ status }} rounded-3" 
+                                data-seat="{{ seat_id }}"
+                                data-status="{{ status }}"
+                                {% if status != 'available' %}disabled{% endif %}>
+                            {{ seat_id }}
+                            <div class="status-text small mt-1">{{ status|title }}</div>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sticky-sidebar">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">Your Selection</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="selection-details" class="text-center py-4">
+                            <p class="text-muted">Select a seat to continue</p>
+                        </div>
+                        <form id="payment-form" class="d-none" method="POST" action="{{ url_for('booking_bp.checkout') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="concert_id" value="{{ concert.id }}">
+                            <input type="hidden" name="seat_id" id="selected-seat">
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Attendee Name</label>
+                                <input type="text" name="attendee_name" class="form-control" required>
+                              </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" name="attendee_email" class="form-control" required>
+                            </div>
+                            
+                            <div id="payment-element" class="mb-3"></div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">Complete Purchase</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.seat').forEach(seat => {
+    seat.addEventListener('click', async () => {
+        const seatId = seat.dataset.seat;
+        
+        // Lock seat API call
+        const response = await fetch('/lock_seat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'concert_id': '{{ concert.id }}',
+                'seat_id': seatId
+            })
+        });
+
+        if (response.ok) {
+            // Update UI
+            document.getElementById('selected-seat').value = seatId;
+            document.getElementById('payment-form').classList.remove('d-none');
+            document.getElementById('selection-details').innerHTML = `
+                <h5 class="mb-1">${seatId}</h5>
+                <div class="badge bg-success">Locked for 5 minutes</div>
+            `;
+        }
+    });
+});
+</script>
+{% endblock %}
